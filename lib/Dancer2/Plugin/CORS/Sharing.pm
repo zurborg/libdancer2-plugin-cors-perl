@@ -94,7 +94,7 @@ method rule (
 method add (
 	Str|RegexpRef|Dancer2::Core::Route|ArrayRef[Str]|ArrayRef[RegexpRef]|ArrayRef[Dancer2::Core::Route] $path!
 ) {
-	return map { $self->add($_) } @$path if ref $path eq 'ARRAY';
+	return map {( $self->add($_) )} @$path if ref $path eq 'ARRAY';
 	my $dsl = $self->dsl;
 	my $app = $dsl->app;
 	my $store = $self->store;
@@ -106,8 +106,8 @@ method add (
 		path => $path,
 		rules => $self->rules,
 	};
-	$dsl->options($path => sub { '' });
-	return $self;
+	my $route = $dsl->options($path => sub { '' });
+	return wantarray ? ($route) : $self;
 }
 
 =method get
